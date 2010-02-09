@@ -17,7 +17,6 @@ class PipesCanvas extends Canvas implements CommandListener {
     private Image offscreenGraphics;
     private Image imgYouWin;
     private Random random = new Random();
-    private Stack connectedPipes;
     private int mode = MODE_GAME;
     /** For use in {@link #checkConnections()} */
     private Stack toBeChecked;
@@ -184,7 +183,6 @@ class PipesCanvas extends Canvas implements CommandListener {
             }
         }
 
-        connectedPipes = new Stack();
         toBeChecked = new Stack();
     }
 
@@ -586,15 +584,10 @@ class PipesCanvas extends Canvas implements CommandListener {
     public void checkConnections() {
         Pipe p, p2;
         int x, y;
-
-        // Set all pipes to be disconnected
-        while (connectedPipes.size() > 0) {
-            ((Pipe) connectedPipes.pop()).setInConnectedSet(false);
-//			connectedPipes.removeElementAt(0);
-        }
+		int connectedPipesCount = 0;
 
         p = pipes[cols / 2][rows / 2];
-        connectedPipes.addElement(p);
+        connectedPipesCount++;
         toBeChecked.addElement(p);
         p.setInConnectedSet(true);
 
@@ -607,7 +600,7 @@ class PipesCanvas extends Canvas implements CommandListener {
             if (p.isConnected(Pipe.CONN_UP)) {
                 p2 = getPipe(x, y - 1);
                 if (p2 != null && p2.isConnected(Pipe.CONN_DOWN) && !p2.isInConnectedSet()) {
-                    connectedPipes.addElement(p2);
+					connectedPipesCount++;
                     toBeChecked.addElement(p2);
                     p2.setInConnectedSet(true);
                 }
@@ -616,7 +609,7 @@ class PipesCanvas extends Canvas implements CommandListener {
             if (p.isConnected(Pipe.CONN_DOWN)) {
                 p2 = getPipe(x, y + 1);
                 if (p2 != null && p2.isConnected(Pipe.CONN_UP) && !p2.isInConnectedSet()) {
-                    connectedPipes.addElement(p2);
+					connectedPipesCount++;
                     toBeChecked.addElement(p2);
                     p2.setInConnectedSet(true);
                 }
@@ -625,7 +618,7 @@ class PipesCanvas extends Canvas implements CommandListener {
             if (p.isConnected(Pipe.CONN_LEFT)) {
                 p2 = getPipe(x - 1, y);
                 if (p2 != null && p2.isConnected(Pipe.CONN_RIGHT) && !p2.isInConnectedSet()) {
-                    connectedPipes.addElement(p2);
+					connectedPipesCount++;
                     toBeChecked.addElement(p2);
                     p2.setInConnectedSet(true);
                 }
@@ -634,14 +627,14 @@ class PipesCanvas extends Canvas implements CommandListener {
             if (p.isConnected(Pipe.CONN_RIGHT)) {
                 p2 = getPipe(x + 1, y);
                 if (p2 != null && p2.isConnected(Pipe.CONN_LEFT) && !p2.isInConnectedSet()) {
-                    connectedPipes.addElement(p2);
+					connectedPipesCount++;
                     toBeChecked.addElement(p2);
                     p2.setInConnectedSet(true);
                 }
             }
         }
 
-        if (connectedPipes.size() == (rows * cols)) {
+        if (connectedPipesCount == (rows * cols)) {
             // Winner!
             setMode(MODE_YOU_WIN);
         }
