@@ -25,8 +25,6 @@ class PipesCanvas extends Canvas implements CommandListener {
 //#     private Command viewLog;
     private int rows = 8;
     private int cols = 8;
-    private static int scrollX = 0;
-    private static int scrollY = 0;
     private static final int MODE_GAME = 0;
     private static final int MODE_YOU_WIN = 1;
     private static final int MODE_RESIZE = 2;
